@@ -8,7 +8,7 @@ app_license = "mit"
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext"]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -43,7 +43,11 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+	"Opportunity": "public/js/opportunity.js",
+	"Customer": "public/js/customer.js",
+	"Project": "public/js/project.js",
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -85,8 +89,8 @@ app_license = "mit"
 # Installation
 # ------------
 
-# before_install = "custom_pec.install.before_install"
-# after_install = "custom_pec.install.after_install"
+after_install = "custom_pec.setup.install.after_install"
+after_migrate = "custom_pec.setup.install.after_migrate"
 
 # Uninstallation
 # ------------
@@ -144,34 +148,31 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Opportunity": {
+		"validate": "custom_pec.crm.opportunity.validate",
+		"on_update": "custom_pec.crm.opportunity.on_update",
+	},
+	"Customer": {
+		"onload": "custom_pec.crm.customer.onload",
+	},
+	"Communication": {
+		"after_insert": "custom_pec.crm.communication.after_insert",
+	},
+	"Project": {
+		"validate": "custom_pec.project.handoff.validate",
+		"on_update": "custom_pec.project.handoff.on_update",
+	},
+}
 
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"custom_pec.tasks.all"
-# 	],
-# 	"daily": [
-# 		"custom_pec.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"custom_pec.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"custom_pec.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"custom_pec.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"daily": [
+		"custom_pec.tasks.notify_bid_validity_expiry",
+	],
+}
 
 # Testing
 # -------
